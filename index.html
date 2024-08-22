@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>Eeny Meeny</title>
+    <style>
+      #needle, #wheel {
+        margin: 1ex auto;
+      }
+      #needle {
+        background: black;
+        height: 3ex;
+        margin-top: -1ex;
+        width: 0.4ex;
+      }
+      #wheel {
+        background: #eee;
+        border: 1px solid #aaa;
+        border-radius: 50%;
+        height: 50ex;
+        width: 50ex;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wheel"><div id="needle"></div></div>
+    <script>
+      const colors = [
+        'cyan', 'yellow',
+      ];
+      let names;
+      const url = new URL(document.location.href);
+      console.log(url);
+      for (let e of url.searchParams.entries()) {
+        if (e[0] === 'names') {
+          names = e[1].split(',');
+        }
+        console.log(names);
+      }
+    </script>
+  </body>
+</html>
