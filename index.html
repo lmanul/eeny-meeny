@@ -56,6 +56,7 @@
       let spinDurationMs = 5000;
       let spinStartMs;
       let spinSpeed;
+      let initialSpinSpeed;
       let names;
       const url = new URL(document.location.href);
       for (let e of url.searchParams.entries()) {
@@ -108,10 +109,15 @@
       const wheel = document.getElementById('wheel');
       let currentAngle = 0;
 
+      const reset = () => {
+        initialSpinSpeed = 7 + Math.floor(Math.random() * 6);
+        spinSpeed = initialSpinSpeed;
+        spinStartMs = new Date().getTime();
+      };
+
       const spin = () => {
         document.getElementById('winner').textContent = '';
-        spinSpeed = 7 + Math.floor(Math.random() * 6);
-        spinStartMs = new Date().getTime();
+        reset();
         spinIncrement();
       };
 
@@ -127,6 +133,7 @@
           theEnd(currentAngle);
           return;
         }
+        spinSpeed = (1 - (nowMs - spinStartMs) / spinDurationMs) * initialSpinSpeed;
         currentAngle = (currentAngle + spinSpeed) % 360;
         setPieAngle(currentAngle);
         requestAnimationFrame(spinIncrement);
