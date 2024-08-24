@@ -49,9 +49,9 @@
     <div id="winner"></div>
     <script>
       const colors = [
-        'cornflowerblue', 'orangered', 'yellow', 'mediumpurple', 'lawngreen',
+        'cornflowerblue', 'orangered', 'mediumpurple', 'lawngreen', 'yellow',
         'turquoise', 'orange', 'palevioletred', 'tomato', 'yellowgreen',
-        'darkkhaki',
+        'darkkhaki', 'gold', 'chocolate', 'hotpink',
       ];
       let spinDurationMs = 5000;
       let spinStartMs;
@@ -154,9 +154,16 @@
         wheel.style.transform = 'rotate(-' + angle + 'deg)';
       };
 
-      drawPie(names, colors);
-      setPieAngle(currentAngle);
-      spin();
+      if (!names || names.length < 1) {
+        document.getElementById('hlayout').innerHTML = `
+          <big style="font-size: xx-large; margin-top: 5ex;">Please give me a list of names in the URL.&nbsp;
+          <a href="${'//' + location.host + location.pathname}?names=John,Paul,George,Ringo&duration=3">Click here to load an example</a>.</big>
+        `;
+      } else {
+        drawPie(names, colors);
+        setPieAngle(currentAngle);
+        spin();
+      }
 
     </script>
   </body>
