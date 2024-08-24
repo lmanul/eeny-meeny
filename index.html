@@ -3,16 +3,36 @@
   <head>
     <title>Eeny Meeny</title>
     <style>
-      body { background: #ccc; }
+      body {
+        align-items: center;
+        background: #ccc;
+        display: flex;
+        justify-content: center;
+      }
       #wheel {
         width: 500px;
+      }
+      #needle {
+        background: black;
+        height: 0.3ex;
+        margin-left: -0.8ex;
+        position: relative;
+        width: 3ex;
+        z-index: 10;
+      }
+      button {
+        cursor: pointer;
+        font-size: large;
+        margin-left: 2ex;
+        padding: 1ex;
+        position: relative;
+        z-index: 20;
       }
     </style>
   </head>
   <body>
-    <div>
-      <canvas id="wheel" width="500" height="500"></canvas>
-    </div>
+    <canvas id="wheel" width="500" height="500"></canvas>
+    <div id="needle"></div>
     <div><button onclick="spin()">Spin</button></div>
     <script>
       const colors = [
