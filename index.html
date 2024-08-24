@@ -22,6 +22,7 @@
       ];
       let spinDurationMs = 5000;
       let spinStartMs;
+      let spinSpeed;
       let names;
       const url = new URL(document.location.href);
       for (let e of url.searchParams.entries()) {
@@ -38,7 +39,6 @@
         const ctx = canvas.getContext('2d');
         let lastend = 0;
 
-        // make the chart 10 px smaller to fit on canvas
         const w = canvas.width / 2;
         const h = canvas.height / 2;
         const fraction = (1 / names.length);
@@ -56,11 +56,18 @@
           ctx.stroke();
           ctx.fillStyle ='black';
           ctx.font = '20px Arial';
-          ctx.textAlign = 'center';
+          ctx.textAlign = 'right';
           ctx.textBaseline = 'middle';
           const mid = lastend + angle / 2;
-          const fromCenter = 2 * r / 3;
-          ctx.fillText(names[i], w + Math.cos(mid) * fromCenter, h + Math.sin(mid) * fromCenter);
+          const fromCenter = 0.92 * r;
+          const textPositionX = w + Math.cos(mid) * fromCenter;
+          const textPositionY = h + Math.sin(mid) * fromCenter;
+          ctx.save();
+          ctx.translate(textPositionX, textPositionY);
+          ctx.rotate(lastend + angle / 2);
+          ctx.fillText(names[i], 0, 0);
+          ctx.restore();
+
           lastend += angle;
         }
       };
@@ -69,6 +76,7 @@
       let currentAngle = 0;
 
       const spin = () => {
+        spinSpeed = 7 + Math.floor(Math.random() * 6);
         spinStartMs = new Date().getTime();
         spinIncrement();
       };
@@ -78,7 +86,7 @@
         if (nowMs - spinStartMs > spinDurationMs) {
           return;
         }
-        currentAngle += 10;
+        currentAngle += spinSpeed;
         setPieAngle(currentAngle);
         requestAnimationFrame(spinIncrement);
       };
