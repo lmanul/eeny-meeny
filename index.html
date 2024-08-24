@@ -68,8 +68,8 @@
         }
       }
 
-      const drawPie = (canvasId, names, colors) => {
-        const canvas = document.getElementById(canvasId);
+      const drawPie = (names, colors) => {
+        const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
         let lastend = 0;
 
@@ -121,10 +121,21 @@
         spinIncrement();
       };
 
+      const removeAndSpin = (index) => {
+        names.splice(index, 1);
+        drawPie(names, colors);
+        spin();
+      };
+
       const theEnd = (finalAngle) => {
         const finalFraction = finalAngle / 360;
         const finalIndex = Math.floor(finalFraction * names.length);
-        document.getElementById('winner').textContent = names[finalIndex];
+        let respinButton = names.length <= 1 ? '' : `
+          <button onclick='removeAndSpin(${finalIndex})'>
+            Remove & Spin</button>`;
+        document.getElementById('winner').innerHTML = `
+          ${names[finalIndex]}${respinButton}
+        `;
       };
 
       const spinIncrement = () => {
@@ -143,7 +154,7 @@
         wheel.style.transform = 'rotate(-' + angle + 'deg)';
       };
 
-      drawPie('wheel', names, colors);
+      drawPie(names, colors);
       setPieAngle(currentAngle);
       spin();
 
