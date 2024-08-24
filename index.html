@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Eeny Meeny</title>
     <style>
+      body { background: #ccc; }
       #needle, #wheel {
         margin: 1ex auto;
       }
@@ -12,29 +14,60 @@
         width: 0.4ex;
       }
       #wheel {
-        background: #eee;
-        border: 1px solid #aaa;
-        border-radius: 50%;
-        height: 50ex;
-        width: 50ex;
+        width: 500px;
       }
     </style>
   </head>
   <body>
-    <div id="wheel"><div id="needle"></div></div>
+    <canvas id="wheel" width="500" height="500"></canvas>
     <script>
       const colors = [
-        'cyan', 'yellow',
+        'cornflowerblue', 'orangered', 'yellow', 'mediumpurple', 'lawngreen',
+        'turquoise', 'orange', 'palevioletred', 'tomato', 'yellowgreen',
+        'darkkhaki',
       ];
       let names;
       const url = new URL(document.location.href);
-      console.log(url);
       for (let e of url.searchParams.entries()) {
         if (e[0] === 'names') {
           names = e[1].split(',');
         }
-        console.log(names);
       }
+
+      const drawPie = (canvasId, names, colors) => {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        let lastend = 0;
+
+        // make the chart 10 px smaller to fit on canvas
+        const offset = 10;
+        const w = (canvas.width - offset) / 2;
+        const h = (canvas.height - offset) / 2;
+        const fraction = (1 / names.length);
+        const angle = fraction * 2 * Math.PI;
+        for (var i = 0; i < names.length; i++) {
+          ctx.fillStyle = colors[i % colors.length];
+          ctx.strokeStyle = 'white';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(w, h);
+          const r = h - offset / 2;
+          ctx.arc(w , h, r, lastend, lastend + angle, false);
+          ctx.lineTo(w, h);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle ='black';
+          ctx.font = '20px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const mid = lastend + angle / 2;
+          const fromCenter = 2 * r / 3;
+          ctx.fillText(names[i], w + Math.cos(mid) * fromCenter, h + Math.sin(mid) * fromCenter);
+          lastend += angle;
+        }
+      };
+      drawPie('wheel', names, colors);
+
     </script>
   </body>
 </html>
