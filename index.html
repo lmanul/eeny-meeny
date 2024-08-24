@@ -4,33 +4,32 @@
     <title>Eeny Meeny</title>
     <style>
       body { background: #ccc; }
-      #needle, #wheel {
-        margin: 1ex auto;
-      }
-      #needle {
-        background: black;
-        height: 3ex;
-        margin-top: -1ex;
-        width: 0.4ex;
-      }
       #wheel {
         width: 500px;
       }
     </style>
   </head>
   <body>
-    <canvas id="wheel" width="500" height="500"></canvas>
+    <div>
+      <canvas id="wheel" width="500" height="500"></canvas>
+    </div>
+    <div><button onclick="spin()">Spin</button></div>
     <script>
       const colors = [
         'cornflowerblue', 'orangered', 'yellow', 'mediumpurple', 'lawngreen',
         'turquoise', 'orange', 'palevioletred', 'tomato', 'yellowgreen',
         'darkkhaki',
       ];
+      let spinDurationMs = 5000;
+      let spinStartMs;
       let names;
       const url = new URL(document.location.href);
       for (let e of url.searchParams.entries()) {
         if (e[0] === 'names') {
           names = e[1].split(',');
+        }
+        if (e[0] === 'duration') {
+          spinDurationMs = parseInt(e[1]) * 1000;
         }
       }
 
@@ -40,9 +39,8 @@
         let lastend = 0;
 
         // make the chart 10 px smaller to fit on canvas
-        const offset = 10;
-        const w = (canvas.width - offset) / 2;
-        const h = (canvas.height - offset) / 2;
+        const w = canvas.width / 2;
+        const h = canvas.height / 2;
         const fraction = (1 / names.length);
         const angle = fraction * 2 * Math.PI;
         for (var i = 0; i < names.length; i++) {
@@ -51,8 +49,8 @@
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(w, h);
-          const r = h - offset / 2;
-          ctx.arc(w , h, r, lastend, lastend + angle, false);
+          const r = h;
+          ctx.arc(w, h, r, lastend, lastend + angle, false);
           ctx.lineTo(w, h);
           ctx.fill();
           ctx.stroke();
@@ -66,7 +64,32 @@
           lastend += angle;
         }
       };
+
+      const wheel = document.getElementById('wheel');
+      let currentAngle = 0;
+
+      const spin = () => {
+        spinStartMs = new Date().getTime();
+        spinIncrement();
+      };
+
+      const spinIncrement = () => {
+        const nowMs = new Date().getTime();
+        if (nowMs - spinStartMs > spinDurationMs) {
+          return;
+        }
+        currentAngle += 10;
+        setPieAngle(currentAngle);
+        requestAnimationFrame(spinIncrement);
+      };
+
+      const setPieAngle = (angle) => {
+        wheel.style.transform = 'rotate(' + angle + 'deg)';
+      };
+
       drawPie('wheel', names, colors);
+      setPieAngle(currentAngle);
+      spin();
 
     </script>
   </body>
