@@ -4,21 +4,31 @@
     <title>Eeny Meeny</title>
     <style>
       body {
-        align-items: center;
         background: #ccc;
         display: flex;
+        flex-direction: column;
+        gap: 5ex;
+      }
+      #hlayout {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
         justify-content: center;
       }
       #wheel {
         width: 500px;
       }
       #needle {
-        background: black;
-        height: 0.3ex;
+        background: rgba(0, 0, 0, 0.5);
+        height: 0.5ex;
         margin-left: -0.8ex;
         position: relative;
-        width: 3ex;
+        width: 4ex;
         z-index: 10;
+      }
+      #winner {
+        font-size: xx-large;
+        text-align: center;
       }
       button {
         cursor: pointer;
@@ -31,9 +41,12 @@
     </style>
   </head>
   <body>
-    <canvas id="wheel" width="500" height="500"></canvas>
-    <div id="needle"></div>
-    <div><button onclick="spin()">Spin</button></div>
+    <div id="hlayout">
+      <canvas id="wheel" width="500" height="500"></canvas>
+      <div id="needle"></div>
+      <div><button onclick="spin()">Spin</button></div>
+    </div>
+    <div id="winner"></div>
     <script>
       const colors = [
         'cornflowerblue', 'orangered', 'yellow', 'mediumpurple', 'lawngreen',
@@ -96,23 +109,31 @@
       let currentAngle = 0;
 
       const spin = () => {
+        document.getElementById('winner').textContent = '';
         spinSpeed = 7 + Math.floor(Math.random() * 6);
         spinStartMs = new Date().getTime();
         spinIncrement();
       };
 
+      const theEnd = (finalAngle) => {
+        const finalFraction = finalAngle / 360;
+        const finalIndex = Math.floor(finalFraction * names.length);
+        document.getElementById('winner').textContent = names[finalIndex];
+      };
+
       const spinIncrement = () => {
         const nowMs = new Date().getTime();
         if (nowMs - spinStartMs > spinDurationMs) {
+          theEnd(currentAngle);
           return;
         }
-        currentAngle += spinSpeed;
+        currentAngle = (currentAngle + spinSpeed) % 360;
         setPieAngle(currentAngle);
         requestAnimationFrame(spinIncrement);
       };
 
       const setPieAngle = (angle) => {
-        wheel.style.transform = 'rotate(' + angle + 'deg)';
+        wheel.style.transform = 'rotate(-' + angle + 'deg)';
       };
 
       drawPie('wheel', names, colors);
